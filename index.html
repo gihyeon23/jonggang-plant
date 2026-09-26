@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>종강 D-day 식물 위젯</title>
+  <meta name="description" content="개강일부터 매주 자라서 종강일에 꽃이 피는 노션용 D-day 위젯">
+  <meta name="theme-color" content="#F8F4EC">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="종강 식물">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // 첫 화면 깜빡임 방지: 위젯인지 생성 페이지인지 먼저 표시
+    document.documentElement.className =
+      !/[?&]edit(=|&|$)/.test(location.search) && /[?&](start|end|theme|size|debugWeek)=/.test(location.search)
+        ? 'is-widget' : 'is-generator';
+  </script>
+</head>
+<body>
+  <!-- 위젯 (URL 파라미터가 있을 때) -->
+  <main id="widget" class="widget"></main>
+
+  <!-- 링크 생성 페이지 (파라미터 없이 접속했을 때) -->
+  <div id="generator" class="gen">
+    <header class="gen-head">
+      <div class="gen-logo" aria-hidden="true">🌱</div>
+      <h1>종강 D-day 식물 위젯</h1>
+      <p>개강일부터 매주 한 단계씩 자라서, 종강일에 꽃이 활짝 피어요.<br>노션 페이지에 <kbd>/embed</kbd>로 붙여 쓰세요.</p>
+    </header>
+
+    <section class="card">
+      <h2><span class="num">1</span>학기 설정</h2>
+      <div class="fields">
+        <label class="field"><span>개강일</span><input type="date" id="f-start" required></label>
+        <label class="field"><span>종강일</span><input type="date" id="f-end" required></label>
+      </div>
+      <p class="summary" id="f-summary"></p>
+      <p class="error" id="f-error" hidden>종강일은 개강일보다 뒤여야 해요.</p>
+
+      <div class="options">
+        <fieldset class="seg">
+          <legend>테마</legend>
+          <label><input type="radio" name="theme" value="light"><span>라이트</span></label>
+          <label><input type="radio" name="theme" value="dark"><span>다크</span></label>
+          <label><input type="radio" name="theme" value="transparent"><span>투명</span></label>
+        </fieldset>
+        <fieldset class="seg">
+          <legend>크기</legend>
+          <label><input type="radio" name="size" value="auto"><span>자동</span></label>
+          <label><input type="radio" name="size" value="wide"><span>가로형</span></label>
+          <label><input type="radio" name="size" value="square"><span>정사각형</span></label>
+          <label><input type="radio" name="size" value="mini"><span>한 줄</span></label>
+        </fieldset>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="preview-head">
+        <h2><span class="num">2</span>미리보기</h2>
+        <div class="preview-tools">
+          <label class="select">
+            <span>성장 단계</span>
+            <select id="f-week"></select>
+          </label>
+          <fieldset class="seg small">
+            <legend class="sr-only">노션 배경</legend>
+            <label><input type="radio" name="pagebg" value="light"><span>노션 라이트</span></label>
+            <label><input type="radio" name="pagebg" value="dark"><span>노션 다크</span></label>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" data-page="light" data-size="auto">
+        <figure class="pv pv-full">
+          <div class="frame" style="width:280px;height:540px"><iframe title="폰 전체 화면 미리보기" loading="lazy"></iframe></div>
+          <figcaption>폰 전체 화면 · 링크를 폰에서 열었을 때</figcaption>
+        </figure>
+        <div class="pv-others">
+          <figure class="pv pv-wide">
+            <div class="frame" style="width:400px;height:180px"><iframe title="가로형 미리보기" loading="lazy"></iframe></div>
+            <figcaption>가로형 · 약 400×180</figcaption>
+          </figure>
+          <figure class="pv pv-square">
+            <div class="frame" style="width:220px;height:220px"><iframe title="정사각형 미리보기" loading="lazy"></iframe></div>
+            <figcaption>정사각형 · 약 220×220</figcaption>
+          </figure>
+          <figure class="pv pv-mini">
+            <div class="frame" style="width:400px;height:56px"><iframe title="한 줄형 미리보기" loading="lazy"></iframe></div>
+            <figcaption>한 줄형 · 높이 60 이하</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p class="hint">박스 오른쪽 아래 모서리를 끌어 크기를 바꿔보세요. '자동'이면 박스 크기에 맞춰 모양이 바뀌어요.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">3</span>링크 복사</h2>
+      <div class="link-row">
+        <input id="f-link" type="text" readonly aria-label="위젯 링크" onclick="this.select()">
+        <button id="copy-btn" type="button">노션에 붙일 링크 복사</button>
+      </div>
+      <p class="warn" id="local-warn" hidden>지금은 내 컴퓨터의 파일로 열려 있어서, 이 링크는 노션에서 열리지 않아요. GitHub Pages에 배포한 뒤 그 주소에서 링크를 복사하세요.</p>
+    </section>
+
+    <section class="card howto">
+      <h2>노션에 붙이는 방법</h2>
+      <ol>
+        <li>노션 페이지에서 <kbd>/embed</kbd> 입력 → <b>임베드</b> 선택</li>
+        <li>복사한 링크 붙여넣기 → <b>링크 임베드</b></li>
+        <li>박스 모서리를 끌어 크기 조절
+          <ul>
+            <li>가로로 길게 (약 400×180) → 식물 + D-day + 진행 바</li>
+            <li>정사각형 (약 220×220) → 큰 식물 + D-day</li>
+            <li>얇게 (높이 60 이하) → 한 줄 요약</li>
+          </ul>
+        </li>
+      </ol>
+      <p class="note">📱 폰에서 링크를 열면 전체 화면으로 보여요. 홈 화면에 추가하면 앱처럼 쓸 수 있어요.<br>
+        🔒 설정은 모두 링크 안에만 들어 있어요. 쿠키나 브라우저 저장소를 쓰지 않아요.</p>
+    </section>
+  </div>
+
+  <script src="plants.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
