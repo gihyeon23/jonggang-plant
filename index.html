@@ -12,7 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=1.1">
   <script>
     // 첫 화면 깜빡임 방지: 위젯인지 생성 페이지인지 먼저 표시
     document.documentElement.className =
@@ -71,6 +71,10 @@
             <label><input type="radio" name="pagebg" value="light"><span>노션 라이트</span></label>
             <label><input type="radio" name="pagebg" value="dark"><span>노션 다크</span></label>
           </fieldset>
+          <fieldset class="seg small">
+            <legend class="sr-only">정각 비 미리보기</legend>
+            <label><input type="checkbox" id="f-rain"><span>💧 정각 비</span></label>
+          </fieldset>
         </div>
       </div>
 
@@ -124,7 +128,7 @@
     </section>
   </div>
 
-  <script src="plants.js"></script>
-  <script src="app.js"></script>
+  <script src="plants.js?v=1.1"></script>
+  <script src="app.js?v=1.1"></script>
 </body>
 </html>

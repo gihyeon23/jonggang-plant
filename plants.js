@@ -261,6 +261,28 @@
     return 'smile';
   }
 
+  // 정각 비 (위젯 루트에 data-rain이 있을 때만 보임)
+  function rain() {
+    // [x, 시작 지연(s)]
+    var drops = [[36, 0], [47, 0.45], [58, 0.15], [69, 0.6], [80, 0.3], [41, 0.75], [53, 0.9], [64, 0.35], [75, 0.8], [85, 0.55]];
+    var s = '<g class="p-rain" aria-hidden="true">';
+    drops.forEach(function (d) {
+      s += '<path class="p-drop" style="--d:' + d[1] + 's" d="M' + d[0] + ' -12 l-1 7"/>' +
+        '<ellipse class="p-splash" style="--d:' + d[1] + 's" cx="' + (d[0] - 1.6) + '" cy="97" rx="2.6" ry="0.9"/>';
+    });
+    return s + '</g>';
+  }
+
+  // 다크 모드에서 식물 뒤에 깔리는 은은한 빛 (라이트에선 투명)
+  var glowSeq = 0;
+  function glow() {
+    var id = 'p-glow-' + (++glowSeq);
+    return '<defs><radialGradient id="' + id + '">' +
+      '<stop offset="0" class="p-glow"/><stop offset="1" class="p-glow-edge"/>' +
+      '</radialGradient></defs>' +
+      '<ellipse cx="60" cy="96" rx="70" ry="66" fill="url(#' + id + ')"/>';
+  }
+
   function render(stage, label) {
     var body = '';
     var front = '';
@@ -276,8 +298,9 @@
       if (cfg.flower) extra = pollen(p.top.x, p.top.y - 4);
     }
     return '<svg class="plant-svg" viewBox="0 0 120 150" preserveAspectRatio="xMidYMax meet" role="img" aria-label="' + (label || '식물') + '" xmlns="http://www.w3.org/2000/svg">' +
+      glow() +
       '<ellipse class="p-ground" cx="60" cy="147.5" rx="30" ry="2.5"/>' +
-      pot(faceFor(stage)) + body + front + extra +
+      pot(faceFor(stage)) + body + front + extra + rain() +
       '</svg>';
   }
 

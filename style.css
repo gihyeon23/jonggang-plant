@@ -75,8 +75,11 @@ body {
   --packet-flap: #E6CFA1;
   --packet-label: #FFFFFF;
   --sweat: #9CD2F0;
+  --rain: #7FBDE3;
   --pollen: #F4C947;
   --ground: rgba(80, 60, 30, 0.07);
+  --glow: transparent;
+  --glow-opacity: 0;
 }
 
 [data-theme="dark"] {
@@ -101,29 +104,33 @@ body {
   --bloom-bg: #3A3322;
   --bloom-text: #F2CF6B;
 
-  --leaf: #8CC495;
-  --leaf-b: #74B07E;
-  --vein: rgba(20, 50, 30, 0.45);
-  --stem: #74AE7E;
-  --wilt: #AFAB7E;
-  --wilt-b: #9D986D;
-  --pot: #C98466;
-  --rim: #D69576;
-  --pot-shade: rgba(0, 0, 0, 0.14);
-  --soil: #5E4838;
-  --face: #3A2A20;
-  --blush: #E48F8A;
-  --petal: #EDA3B3;
-  --petal-in: #F5C2CD;
-  --petal-line: #D9879A;
-  --sepal: #74AE7E;
-  --center: #F0CB60;
-  --seed: #A77C55;
-  --packet: #D8C7A2;
-  --packet-flap: #C7B28A;
-  --packet-label: #F4EEE2;
-  --pollen: #F0CB60;
-  --ground: rgba(0, 0, 0, 0.25);
+  /* 식물은 UI처럼 어둡게 누르지 않고 라이트 색에 가깝게 유지 */
+  --leaf: #B2E0AE;
+  --leaf-b: #93CF97;
+  --vein: rgba(40, 90, 55, 0.40);
+  --stem: #8FCB94;
+  --wilt: #C6C292;
+  --wilt-b: #B3AE7E;
+  --pot: #E8A07A;
+  --rim: #F2B590;
+  --pot-shade: rgba(110, 45, 15, 0.12);
+  --soil: #85634C;
+  --face: #4A382B;
+  --blush: #EE9A94;
+  --petal: #F2ACBB;
+  --petal-in: #F8CDD6;
+  --petal-line: #E592A5;
+  --sepal: #8FCB94;
+  --center: #F5D26A;
+  --seed: #B88859;
+  --packet: #E8D8B6;
+  --packet-flap: #DAC497;
+  --packet-label: #FBF6EC;
+  --pollen: #F5D26A;
+  --rain: #9ACFF0;
+  --ground: rgba(255, 255, 255, 0.06);
+  --glow: #FFE6BD;
+  --glow-opacity: 0.22;
 }
 
 /* 투명: 배경 없이 노션 페이지에 녹아들기. 글자색은 기기의 라이트/다크 설정을 따름 */
@@ -151,6 +158,8 @@ body {
     --final-text: #EFA2C6;
     --bloom-bg: rgba(242, 207, 107, 0.15);
     --bloom-text: #F2CF6B;
+    --glow: #FFE6BD;
+    --glow-opacity: 0.14;
   }
 }
 
@@ -407,6 +416,8 @@ html.is-widget body {
    식물 SVG
    ========================================================= */
 
+.p-glow { stop-color: var(--glow); stop-opacity: var(--glow-opacity); }
+.p-glow-edge { stop-color: var(--glow); stop-opacity: 0; }
 .p-ground { fill: var(--ground); }
 .p-pot { fill: var(--pot); }
 .p-rim { fill: var(--rim); }
@@ -434,6 +445,19 @@ html.is-widget body {
 .p-packet-label { fill: var(--packet-label); }
 .p-packet-text { font: 800 7px var(--font); letter-spacing: 1px; fill: var(--pot); }
 .p-sweat { fill: var(--sweat); }
+
+/* 정각 비 */
+.p-rain { display: none; }
+[data-rain] .p-rain { display: inline; animation: rain-in 0.8s ease-out; }
+.p-drop {
+  fill: none; stroke: var(--rain); stroke-width: 2; stroke-linecap: round;
+  opacity: 0; animation: drop-fall 1.05s linear var(--d) infinite;
+}
+.p-splash {
+  fill: none; stroke: var(--rain); stroke-width: 0.7;
+  opacity: 0; transform-box: fill-box; transform-origin: center;
+  animation: drop-splash 1.05s ease-out var(--d) infinite;
+}
 .p-pollen { fill: var(--pollen); opacity: 0; }
 .p-sparkle { fill: var(--pollen); }
 .p-zzz text { font: 700 8px var(--font); fill: var(--muted); }
@@ -496,6 +520,18 @@ html.is-widget body {
 }
 @keyframes twinkle { 0%, 100% { transform: scale(0.3); opacity: 0.2; } 50% { transform: scale(1); opacity: 1; } }
 @keyframes zzz { 0%, 100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+@keyframes drop-fall {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: 0.9; }
+  84% { transform: translateY(102px); opacity: 0.9; }
+  85%, 100% { transform: translateY(102px); opacity: 0; }
+}
+@keyframes drop-splash {
+  0%, 82% { transform: scale(0.3); opacity: 0; }
+  88% { opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+@keyframes rain-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes now-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 
 @media (prefers-reduced-motion: reduce) {
@@ -504,6 +540,7 @@ html.is-widget body {
     transition: none !important;
   }
   .p-pollen { opacity: 0.8; }
+  .p-drop { opacity: 0.6; }
 }
 
 /* =========================================================

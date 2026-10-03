@@ -9,7 +9,7 @@
   var DEFAULTS = { start: '2026-09-01', end: '2026-12-21', theme: 'light', size: 'auto' };
   var THEMES = ['light', 'dark', 'transparent'];
   var SIZES = ['auto', 'wide', 'square', 'mini', 'full'];
-  var WIDGET_KEYS = ['start', 'end', 'theme', 'size', 'debugWeek'];
+  var WIDGET_KEYS = ['start', 'end', 'theme', 'size', 'debugWeek', 'debugRain'];
   var DAY_MS = 86400000;
   var BAR_CELLS = 16;
 
@@ -64,12 +64,14 @@
       var w = parseInt(p.get('debugWeek'), 10);
       if (isFinite(w)) debugWeek = clamp(w, 0, 17);
     }
-    return { start: start, end: end, theme: theme, size: size, debugWeek: debugWeek };
+    var debugRain = p.get('debugRain') === '1';
+    return { start: start, end: end, theme: theme, size: size, debugWeek: debugWeek, debugRain: debugRain };
   }
 
   function buildQuery(cfg) {
     var q = 'start=' + formatDay(cfg.start) + '&end=' + formatDay(cfg.end) + '&theme=' + cfg.theme + '&size=' + cfg.size;
     if (cfg.debugWeek !== null && cfg.debugWeek !== undefined) q += '&debugWeek=' + cfg.debugWeek;
+    if (cfg.debugRain) q += '&debugRain=1';
     return q;
   }
 
@@ -279,6 +281,22 @@
     // 자정이 지나면 자동으로 다음 날로
     setInterval(render, 60 * 1000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) render(); });
+
+    // 매 정각 1분 동안 물 주기 (비)
+    var rainTimer = null;
+    function updateRain() {
+      var now = new Date();
+      var raining = cfg.debugRain || now.getMinutes() === 0;
+      if (raining) root.setAttribute('data-rain', '');
+      else root.removeAttribute('data-rain');
+      if (cfg.debugRain) return;
+      var sec = now.getSeconds() + now.getMilliseconds() / 1000;
+      var wait = raining ? 60 - sec : (60 - now.getMinutes()) * 60 - sec;
+      clearTimeout(rainTimer);
+      rainTimer = setTimeout(updateRain, wait * 1000 + 50);
+    }
+    updateRain();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) updateRain(); });
   }
 
   /* ---------- 링크 생성 페이지 ---------- */
@@ -339,6 +357,7 @@
 
       // 미리보기만 debugWeek 적용
       c.debugWeek = weekEl.value === '' ? null : +weekEl.value;
+      c.debugRain = $('f-rain').checked;
       var src = '?' + buildQuery(c);
       clearTimeout(timer);
       timer = setTimeout(function () {
